@@ -1,0 +1,87 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class StudentGradeCalculator extends JFrame implements ActionListener {
+    private JTextField[] subjectFields;
+    private JTextField totalMarksField, averagePercentageField, gradeField;
+    private JButton calculateButton;
+
+    public StudentGradeCalculator(int numSubjects) {
+        setTitle("Student Grade Calculator");
+        setSize(400, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(numSubjects + 4, 2));
+
+        subjectFields = new JTextField[numSubjects];
+        for (int i = 0; i < numSubjects; i++) {
+            add(new JLabel("Subject " + (i + 1) + " Marks: "));
+            subjectFields[i] = new JTextField();
+            add(subjectFields[i]);
+        }
+
+        calculateButton = new JButton("Calculate");
+        calculateButton.addActionListener(this);
+        add(calculateButton);
+
+        add(new JLabel("Total Marks: "));
+        totalMarksField = new JTextField();
+        totalMarksField.setEditable(false);
+        add(totalMarksField);
+
+        add(new JLabel("Average Percentage: "));
+        averagePercentageField = new JTextField();
+        averagePercentageField.setEditable(false);
+        add(averagePercentageField);
+
+        add(new JLabel("Grade: "));
+        gradeField = new JTextField();
+        gradeField.setEditable(false);
+        add(gradeField);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        int totalMarks = 0;
+        int numSubjects = subjectFields.length;
+
+        for (JTextField subjectField : subjectFields) {
+            int marks = Integer.parseInt(subjectField.getText());
+            totalMarks += marks;
+        }
+
+        double averagePercentage = (double) totalMarks / numSubjects;
+        String grade = calculateGrade(averagePercentage);
+
+        totalMarksField.setText(String.valueOf(totalMarks));
+        averagePercentageField.setText(String.format("%.2f", averagePercentage));
+        gradeField.setText(grade);
+    }
+
+    private String calculateGrade(double averagePercentage) {
+        if (averagePercentage >= 90) {
+            return "A+";
+        } else if (averagePercentage >= 80) {
+            return "A";
+        } else if (averagePercentage >= 70) {
+            return "B+";
+        } else if (averagePercentage >= 60) {
+            return "B";
+        } else if (averagePercentage >= 50) {
+            return "C+";
+        } else if (averagePercentage >= 40) {
+            return "C";
+        } else {
+            return "F";
+        }
+    }
+
+    public static void main(String[] args) {
+        int numSubjects = Integer.parseInt(JOptionPane.showInputDialog("Enter the number of subjects: "));
+        SwingUtilities.invokeLater(() -> {
+            StudentGradeCalculator calculator = new StudentGradeCalculator(numSubjects);
+            calculator.setVisible(true);
+        });
+    }
+}
